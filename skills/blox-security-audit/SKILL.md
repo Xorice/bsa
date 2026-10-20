@@ -12,11 +12,11 @@ license: MIT
 
 ## 工作顺序
 
-1. **定位与建图**：读 [discovery.md](references/discovery.md)，原地搜索并按需读取实际运行源码，确定入口、资产和危险副作用，建立覆盖账本；不以全量导出为前置步骤。
-2. **推理与推广**：读 [reasoning.md](references/reasoning.md)，从业务不变量双向追踪，组合正常交互、失败和恢复路径；从一个缺口推广到相邻机制。
+1. **定位与建图**：读 [discovery.md](references/discovery.md)，原地搜索并按需读取实际运行源码，确定入口、资产和危险副作用，按相关生命周期建立覆盖账本；不以全量导出为前置步骤。
+2. **推理与推广**：读 [reasoning.md](references/reasoning.md)，从业务不变量双向追踪，检查校验成功与失败分支的实际副作用，组合正常交互、失败和恢复路径；从一个缺口推广到相邻机制。
 3. **并行深查**：有独立审计范围且支持 subagent 时，按 [orchestration.md](references/orchestration.md) 分工；否则串行执行相同问题。按下表只加载相关专项。
-4. **反证与验证**：按 [validation.md](references/validation.md) 审核完整路径，验证关键不变量，区分事实、模型和未证实影响。
-5. **交付**：按 [reporting.md](references/reporting.md) 输出报告与覆盖理由；发现漏洞先直说直接后果、可利用程度与证据边界，再按 [diagrams.md](references/diagrams.md) 生成一份或多份紧凑流程图。
+4. **反证与验证**：按 [validation.md](references/validation.md) 审核完整路径，统一候选分类，验证关键不变量，区分事实、模型和未证实影响。
+5. **交付**：按 [reporting.md](references/reporting.md) 核对覆盖缺口、候选归类及可用历史发现，输出报告与覆盖理由；发现漏洞先直说直接后果、可利用程度与证据边界，再按 [diagrams.md](references/diagrams.md) 生成一份或多份紧凑流程图。
 
 ## 专项索引（按触发条件加载）
 
