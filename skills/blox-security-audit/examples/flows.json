@@ -1,0 +1,34 @@
+{
+  "title": "合成示例：材料消耗与产出",
+  "flows": [{
+    "id": "materials-unique",
+    "title": "示例 A-01 · 只扣 1 件材料，得到完整合成产物",
+    "summary": {
+      "severity": "P2",
+      "direct_effect": "本示例中，单次只扣 1 件材料，却得到规则要求消耗 3 件材料的完整产物。",
+      "exploit_extent": "初始 4 件材料时，最多产出 4 件；正常最多 1 件。每次仍消耗 1 件，材料耗尽即停止，影响限当前会话。",
+      "prerequisites": "拥有至少 1 件可用材料，能够提交合成材料列表；不需要管理权限。",
+      "evidence": "纯合成数据，用于展示格式和证据标记；未对任何 Roblox 项目执行或验证，不表示当前项目存在此漏洞。"
+    },
+    "main_path": ["request", "check", "calculate", "consume", "grant", "limit"],
+    "nodes": [
+      {"id": "request", "label": "提交 3 个材料位置\n三个位置引用同一件材料", "kind": "actor", "evidence": "合成设定：玩家只能选择本人材料。"},
+      {"id": "check", "label": "归属与材料类型检查通过\n缺少整组 ID 唯一性校验", "kind": "check", "evidence": "合成设定：仅逐项校验，没有整组去重。"},
+      {"id": "calculate", "label": "同一件材料的属性累计 3 次\n按完整配方计算产物", "kind": "state", "evidence": "合成设定：属性按输入列表累加。"},
+      {"id": "consume", "label": "按 ID 删除库存\n相同键删除多次仍只扣 1 件", "kind": "failure", "evidence": "合成设定：库存为 ID 到物品的字典。"},
+      {"id": "grant", "label": "发放 1 件完整合成产物\n单次材料成本降为规则的 1/3", "kind": "impact", "evidence": "合成设定的确定结果；非实际项目结论。"},
+      {"id": "limit", "label": "初始 4 件材料最多产出 4 件\n没有存档、交易或跨服扩散", "kind": "impact", "evidence": "合成设定：无新增材料来源，不推断永久获利。"},
+      {"id": "blocked", "label": "已有防护：产物不能再作材料\n材料耗尽后无法继续", "kind": "check", "evidence": "合成设定：产物类型不满足材料要求。"},
+      {"id": "fix", "label": "建议：消费前检查 ID 互异\n整组验证通过后再扣除", "kind": "fix", "evidence": "修复建议；图中不视为已经落地的防护。"}
+    ],
+    "edges": [
+      {"from": "request", "to": "check", "label": "仅表示合成设定中的已知路径", "status": "verified"},
+      {"from": "check", "to": "calculate", "label": "同一 ID 通过三次逐项检查", "status": "verified"},
+      {"from": "calculate", "to": "consume", "status": "verified"},
+      {"from": "consume", "to": "grant", "status": "verified"},
+      {"from": "grant", "to": "limit", "label": "固定库存下的有限次数；非无限产出", "status": "verified"},
+      {"from": "grant", "to": "blocked", "label": "产物类型无法通过材料校验", "status": "blocked"},
+      {"from": "check", "to": "fix", "label": "补齐唯一性约束后应阻断；需要回归验证", "status": "hypothesis"}
+    ]
+  }]
+}

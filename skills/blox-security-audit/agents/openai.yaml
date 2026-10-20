@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blox Security Audit"
+  short_description: "审计自有或获授权 Roblox 项目的逻辑与依赖，输出证据、覆盖理由和漏洞流程图"
+  default_prompt: "使用 $blox-security-audit 在本次对话已明确的授权范围内，对当前 Roblox 项目做防御性源码审计，默认只读、按需委派，追踪第三方库及跨系统漏洞；输出证据、后果、可利用程度、修复建议与流程图，未发现则解释防护、覆盖与盲区。"
