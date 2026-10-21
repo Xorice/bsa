@@ -17,46 +17,53 @@
 
 ## 快速开始
 
-### 1. 安装 skill
+### 1. 安装 skill 包
 
 准备好 Node.js 22.20 或更新版本与 npm，在终端运行：
 
 ```sh
-npx skills add Xorice/bsa --skill blox-security-audit --global
+npx skills add Xorice/bsa
 ```
 
-跟随提示选择你使用的 agent。`--global` 表示用户级安装，可在不同项目中使用；共用 skill 目录为 `~/.agents/skills/blox-security-audit`，各 agent 的发现路径由安装器处理。可选 agent 与具体安装方式见 [Skills CLI 文档](https://github.com/vercel-labs/skills)。
+安装器会从仓库发现完整版 `blox-security-audit` 和文本版 `bsa-lite`，按提示同时选中两个，再选择你使用的 agent 即可。这个仓库打包了两个可独立调用的 skill，无需分开下载安装。可选 agent 与具体安装方式见 [Skills CLI 文档](https://github.com/vercel-labs/skills)。
 
-只需要文本审计与修复，安装轻量版：
+默认安装到当前项目。希望跨项目共用，使用用户级安装：
 
 ```sh
-npx skills add Xorice/bsa --skill bsa-lite --global
+npx skills add Xorice/bsa -g
 ```
 
-两种 skill 可以同时安装；`bsa-lite` 使用 `~/.agents/skills/bsa-lite`，不需要另装完整版。
+用户级共用目录分别为 `~/.agents/skills/blox-security-audit` 和 `~/.agents/skills/bsa-lite`，各 agent 的发现路径由安装器处理。安装后按任务选择调用 `$blox-security-audit` 或 `$bsa-lite`。
 
 <details>
-<summary>指定 agent、项目级安装与更新</summary>
+<summary>单独安装、指定 agent、项目级安装与更新</summary>
+
+只安装其中一个：
+
+```sh
+npx skills add Xorice/bsa --skill blox-security-audit --global
+npx skills add Xorice/bsa --skill bsa-lite --global
+```
 
 只安装给 Codex，并跳过交互选择：
 
 ```sh
-npx skills add Xorice/bsa --skill blox-security-audit --global --agent codex --yes
+npx skills add Xorice/bsa -g -a codex -y
 ```
 
 只在当前项目使用：在项目目录运行，省略 `--global`。
 
 ```sh
-npx skills add Xorice/bsa --skill blox-security-audit
+npx skills add Xorice/bsa
 ```
 
 更新已安装的用户级版本：
 
 ```sh
-npx skills update blox-security-audit --global
+npx skills update blox-security-audit bsa-lite --global
 ```
 
-也可以手动复制仓库内的 `skills/blox-security-audit/` 到 agent 的 skill 目录；保留其中的文件与相对位置。不同 agent 加载新 skill 的方式不同，安装后按所用工具的提示重新加载。
+也可以手动复制仓库内 `skills/` 下所需的 skill 文件夹到 agent 的 skill 目录；保留各自内部文件与相对位置。两种 skill 都能独立使用。不同 agent 加载新 skill 的方式不同，安装后按所用工具的提示重新加载。
 
 </details>
 
