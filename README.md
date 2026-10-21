@@ -7,7 +7,7 @@
 | 你需要什么 | 选择 |
 | --- | --- |
 | 完整审计，面向开发者阅读的报告与流程图 | [blox-security-audit](skills/blox-security-audit/SKILL.md) |
-| 只要文本，交给 agent 修复或直接要求自动修复 | [bsa-lite](skills/bsa-lite/SKILL.md)，可独立安装 |
+| 只要文本，承接完整审计结果或要求自动修复 | [bsa-lite](skills/bsa-lite/SKILL.md) |
 
 [![Validate](https://github.com/Xorice/bsa/actions/workflows/validate.yml/badge.svg)](https://github.com/Xorice/bsa/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -103,6 +103,8 @@ $bsa-lite
 ```
 
 也可以说「用 bsa-lite 按这份 report.md 修复漏洞」。agent 会先对照当前代码逐项复核，再实施有证据的最小修复、检查合法功能和失败恢复，并说明哪些已验证、哪些仍有缺口。只要求审计或提供发现时保持只读；明确要求修复时才改业务。轻量版不生成流程图、HTML 或图数据，默认直接回复文本；需要落盘时可指定 Markdown 文件。
+
+两个 skill 可以接力使用：完整版交付报告与流程图，lite 沿用发现 ID 和证据定位，复核当前代码后修复，返回实际改动、验证与剩余问题。lite 在完整版可用时按需复用其审计指引；缺少完整版时使用内置的简要指引。两个 `SKILL.md` 都只保留简短入口，具体资料随任务加载，避免把两套流程一起塞进上下文。关联不自动启动其他 agent，也不自动重写旧报告或重绘流程图。
 
 ## 效果预览
 
@@ -206,7 +208,8 @@ skills/blox-security-audit/
 └── LICENSE
 
 skills/bsa-lite/
-├── SKILL.md             # 独立的文本审计、修复与验证指引
+├── SKILL.md             # 文本审计与修复的简短入口
+├── references/          # 与完整版关联、独立审计、修复和文本交付
 ├── agents/              # 界面元数据
 └── LICENSE
 
