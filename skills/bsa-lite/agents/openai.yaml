@@ -1,0 +1,4 @@
+interface:
+  display_name: "BSA Lite"
+  short_description: "纯文本 Roblox 漏洞审计与修复，提供代码证据、潜在利用提醒和实际回归结果"
+  default_prompt: "使用 $bsa-lite 检查当前 Roblox 项目，只输出文本发现、潜在恶意利用、最小修复和回归断言；若我明确要求自动修复或按报告修复，先对照当前源码复核，再实施修改、验证并说明残余问题。"

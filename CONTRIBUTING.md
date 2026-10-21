@@ -5,9 +5,10 @@
 ## 内容约定
 
 - 保留 [skills/blox-security-audit/SKILL.md](skills/blox-security-audit/SKILL.md) 作为简短入口，按需将细节放入 skill 内的 `references/`，保持相对链接有效。
-- skill 的运行资源全部放在 `skills/blox-security-audit/` 内，确保复制该目录后可以独立使用。仓库检查脚本、测试与贡献文档保留在仓库根目录的对应位置。
-- 保留默认只读与实际隔离要求；不将通用审计声明写成对每个项目的自动授权。
+- 每个 skill 的运行资源全部放在其 `skills/<skill-name>/` 内，确保可以单独安装；不要用跨 skill 相对链接制造隐式依赖。`bsa-lite` 保持文本交付，不加入图数据、渲染器或对完整版的运行依赖。仓库检查脚本、测试与贡献文档保留在仓库根目录的对应位置。
+- 审计默认只读；`bsa-lite` 在用户要求实施修复时推进修改与验证。保留实际隔离要求，不将通用声明写成对每个项目或线上数据操作的自动授权。
 - 区分源码事实、模型推演、隔离观测和线上证据，修复建议不表示已有防护。不要将未知上限写成无限收益。
+- 每条发现解释有依据的潜在恶意利用与必要前提；缺少最终利用证据时醒目标记待验证，不能省略合理的高影响提醒，也不计作已确认影响。
 - 示例和测试使用合成数据。不要提交真实游戏源码、私有审计材料、真实账号、密钥或线上利用脚本；分享问题前检查附件与日志。
 - Python 工具保持标准库实现和离线运行。修改输入契约或命令行参数时，同步更新 [流程图约定](skills/blox-security-audit/references/diagrams.md)、[README](README.md) 和相关测试。
 
@@ -30,4 +31,4 @@ python -B skills/blox-security-audit/scripts/render_flow.py --input skills/blox-
 
 ## 许可
 
-提交贡献即表示你有权提交这些内容，并同意以本仓库的 [MIT 许可证](LICENSE) 分发该贡献。修改许可文本时同步更新 [skill 内的许可证](skills/blox-security-audit/LICENSE)，以便独立分发。
+提交贡献即表示你有权提交这些内容，并同意以本仓库的 [MIT 许可证](LICENSE) 分发该贡献。修改许可文本时同步更新各 skill 内的许可证，以便独立分发。

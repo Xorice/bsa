@@ -15,7 +15,7 @@ from urllib.parse import unquote, urlsplit
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILL_RELATIVE = Path("skills/blox-security-audit")
+SKILL_RELATIVES = (Path("skills/blox-security-audit"), Path("skills/bsa-lite"))
 SKIP_DIRS = {".git", ".venv", "venv", "out", "dist", "audit"}
 REQUIRED = (
     "README.md", "CONTRIBUTING.md", "LICENSE",
@@ -26,6 +26,9 @@ REQUIRED = (
     "skills/blox-security-audit/scripts/render_flow.py",
     "skills/blox-security-audit/examples/flows.json",
     "skills/blox-security-audit/LICENSE",
+    "skills/bsa-lite/SKILL.md",
+    "skills/bsa-lite/agents/openai.yaml",
+    "skills/bsa-lite/LICENSE",
 )
 
 
@@ -35,23 +38,28 @@ def check(root=ROOT):
     for name in REQUIRED:
         if not (root / name).is_file():
             errors.append("missing file: " + name)
-    skill_root = root / SKILL_RELATIVE
-    skill = skill_root / "SKILL.md"
+    skill_roots = tuple(root / relative for relative in SKILL_RELATIVES)
     if (root / "SKILL.md").exists():
-        errors.append("SKILL.md belongs under skills/blox-security-audit/, not the repository root")
-    if (root / "LICENSE").is_file() and (skill_root / "LICENSE").is_file():
-        if (root / "LICENSE").read_bytes() != (skill_root / "LICENSE").read_bytes():
-            errors.append("skill LICENSE differs from the repository LICENSE")
-    if skill.is_file():
-        text = skill.read_text(encoding="utf-8")
-        block = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", text, re.S)
-        fields = dict(re.findall(r"^([a-z_]+):[ \t]*(.*)$", block[1], re.M)) if block else {}
-        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", fields.get("name", "")) or len(fields.get("name", "")) > 64:
-            errors.append("SKILL.md: missing or invalid skill name")
-        if not fields.get("description", "").strip():
-            errors.append("SKILL.md: missing description")
-        if fields.get("license") != "MIT":
-            errors.append("SKILL.md: license must agree with the MIT LICENSE")
+        errors.append("SKILL.md belongs under skills/<skill-name>/, not the repository root")
+    for skill_root in skill_roots:
+        skill = skill_root / "SKILL.md"
+        label = str(skill.relative_to(root))
+        if (root / "LICENSE").is_file() and (skill_root / "LICENSE").is_file():
+            if (root / "LICENSE").read_bytes() != (skill_root / "LICENSE").read_bytes():
+                errors.append(str(skill_root.relative_to(root)) + ": LICENSE differs from the repository LICENSE")
+        if skill.is_file():
+            text = skill.read_text(encoding="utf-8")
+            block = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", text, re.S)
+            fields = dict(re.findall(r"^([a-z_]+):[ \t]*(.*)$", block[1], re.M)) if block else {}
+            name = fields.get("name", "")
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name) or len(name) > 64:
+                errors.append(label + ": missing or invalid skill name")
+            elif name != skill_root.name:
+                errors.append(label + ": skill name must match its directory")
+            if not fields.get("description", "").strip():
+                errors.append(label + ": missing description")
+            if fields.get("license") != "MIT":
+                errors.append(label + ": license must agree with the MIT LICENSE")
     checked = 0
     for directory, directories, filenames in os.walk(root):
         if "__pycache__" in directories:
@@ -82,14 +90,17 @@ def check(root=ROOT):
                     target = (source.parent / unquote(parsed.path)).resolve()
                     if not target.is_relative_to(root.resolve()) or not target.exists():
                         errors.append(f"{relative}: missing or external local link: {destination}")
-                    elif source.is_relative_to(skill_root) and not target.is_relative_to(skill_root.resolve()):
-                        errors.append(f"{relative}: skill link depends on files outside the installable skill: {destination}")
+                    else:
+                        owner = next((item for item in skill_roots if source.is_relative_to(item)), None)
+                        if owner is not None and not target.is_relative_to(owner):
+                            errors.append(f"{relative}: skill link depends on files outside the installable skill: {destination}")
             except (OSError, ValueError, SyntaxError) as error:
                 errors.append(f"{relative}: {error}")
-    if (skill_root / "scripts/render_flow.py").is_file():
+    render_root = root / "skills/blox-security-audit"
+    if (render_root / "scripts/render_flow.py").is_file():
         try:
-            load = runpy.run_path(str(skill_root / "scripts/render_flow.py"))["load_document"]
-            for example in (skill_root / "examples").glob("*.json"):
+            load = runpy.run_path(str(render_root / "scripts/render_flow.py"))["load_document"]
+            for example in (render_root / "examples").glob("*.json"):
                 load(example)
         except (OSError, ValueError) as error:
             errors.append("example input: " + str(error))

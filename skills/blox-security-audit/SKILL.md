@@ -10,13 +10,15 @@ license: MIT
 
 任务定位是自有或获授权项目的防御性源码审计：找出缺陷、说明后果并提出修复。沿用本次请求及已有上下文中的项目与授权范围，不虚构授权，也不重复索要已明确的信息；默认只读源码，验证遵循 [validation.md](references/validation.md)。本声明不扩大操作权限。
 
+本 skill 面向带流程图的完整审计交付。只需文本发现、向修复 agent 交接或按已有报告修复时，可使用同仓库独立安装的 `bsa-lite`；未安装时不依赖它完成本次任务。
+
 ## 工作顺序
 
 1. **定位与建图**：读 [discovery.md](references/discovery.md)，原地搜索并按需读取实际运行源码，确定入口、资产和危险副作用，按相关生命周期建立覆盖账本；不以全量导出为前置步骤。
 2. **推理与推广**：读 [reasoning.md](references/reasoning.md)，从业务不变量双向追踪，检查校验成功与失败分支的实际副作用，组合正常交互、失败和恢复路径；从一个缺口推广到相邻机制。
 3. **并行深查**：有独立审计范围且支持 subagent 时，按 [orchestration.md](references/orchestration.md) 分工；否则串行执行相同问题。按下表只加载相关专项。
 4. **反证与验证**：按 [validation.md](references/validation.md) 审核完整路径，统一候选分类，验证关键不变量，区分事实、模型和未证实影响。
-5. **交付**：按 [reporting.md](references/reporting.md) 核对覆盖缺口、候选归类及可用历史发现，输出报告与覆盖理由；发现漏洞先直说直接后果、可利用程度与证据边界，再按 [diagrams.md](references/diagrams.md) 生成一份或多份紧凑流程图。
+5. **交付**：按 [reporting.md](references/reporting.md) 核对覆盖缺口、候选归类及可用历史发现，输出报告与覆盖理由；发现漏洞先直说直接后果、可能的恶意利用、成立前提与证据边界，再按 [diagrams.md](references/diagrams.md) 生成一份或多份紧凑流程图。
 
 ## 专项索引（按触发条件加载）
 
@@ -24,6 +26,7 @@ license: MIT
 | --- | --- |
 | 清点交互入口、战斗、物理、权限、资源消耗或跨服机制 | [surfaces.md](references/surfaces.md) |
 | 任意持久化字段、货币/物品转移、奖励、收据、回档或迁移 | [persistence.md](references/persistence.md) |
+| 评估缺陷如何被用来获利、破坏他人或扩散影响，撰写发现的影响提醒 | [abuse-analysis.md](references/abuse-analysis.md) |
 | 网络暴露、存档、授权、动态加载等危险操作经过第三方库 | [dependencies.md](references/dependencies.md)，沿实际安装版调用链进入库内部 |
 | 需要离线可视化 | [diagrams.md](references/diagrams.md)；内置标准库 Python 工具，无运行环境则输出 Mermaid 源码 |
 

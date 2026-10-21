@@ -4,6 +4,11 @@
 
 从本地项目或 Studio 源码出发，追踪客户端输入、服务端校验、资产变更和存档恢复。每条发现都说明：谁能触发、会造成什么后果、依据在哪里，以及哪些影响还没有验证。
 
+| 你需要什么 | 选择 |
+| --- | --- |
+| 完整审计，面向开发者阅读的报告与流程图 | [blox-security-audit](skills/blox-security-audit/SKILL.md) |
+| 只要文本，交给 agent 修复或直接要求自动修复 | [bsa-lite](skills/bsa-lite/SKILL.md)，可独立安装 |
+
 [![Validate](https://github.com/Xorice/bsa/actions/workflows/validate.yml/badge.svg)](https://github.com/Xorice/bsa/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Agent Skill](https://img.shields.io/badge/Agent-Skill-6e56cf)](skills/blox-security-audit/SKILL.md)
@@ -21,6 +26,14 @@ npx skills add Xorice/bsa --skill blox-security-audit --global
 ```
 
 跟随提示选择你使用的 agent。`--global` 表示用户级安装，可在不同项目中使用；共用 skill 目录为 `~/.agents/skills/blox-security-audit`，各 agent 的发现路径由安装器处理。可选 agent 与具体安装方式见 [Skills CLI 文档](https://github.com/vercel-labs/skills)。
+
+只需要文本审计与修复，安装轻量版：
+
+```sh
+npx skills add Xorice/bsa --skill bsa-lite --global
+```
+
+两种 skill 可以同时安装；`bsa-lite` 使用 `~/.agents/skills/bsa-lite`，不需要另装完整版。
 
 <details>
 <summary>指定 agent、项目级安装与更新</summary>
@@ -71,6 +84,19 @@ $blox-security-audit
 
 也可以直接说「用 blox-security-audit 审计这个项目」。首次使用建议说明重点系统；已有报告时，可要求逐项复核，区分仍成立、已修复、被反证和未完成的项目。
 
+### 只要文本，或让 agent 自动修复
+
+用轻量版直接审计并修复当前项目：
+
+```text
+$bsa-lite
+
+检查当前 Roblox 项目的交易和存档链，修复已确认的漏洞。
+只输出文本，给出源码位置、潜在恶意利用、实际修改和回归结果。
+```
+
+也可以说「用 bsa-lite 按这份 report.md 修复漏洞」。agent 会先对照当前代码逐项复核，再实施有证据的最小修复、检查合法功能和失败恢复，并说明哪些已验证、哪些仍有缺口。只要求审计或提供发现时保持只读；明确要求修复时才改业务。轻量版不生成流程图、HTML 或图数据，默认直接回复文本；需要落盘时可指定 Markdown 文件。
+
 ## 效果预览
 
 以下是仓库内[合成示例](skills/blox-security-audit/examples/flows.json)实际渲染的页面截图，用于展示输出格式，不对应任何真实游戏的审计结论。
@@ -100,6 +126,8 @@ $blox-security-audit
 
 没有确认漏洞时，也会说明查过哪些路径、哪些防护起效、还有哪些未知。已有报告中的条目会留下本轮去向，不因本轮未列出就默认已修复。
 
+报告也会提醒有依据的潜在恶意利用。例如保存失败不仅可能丢进度：若资产仍可转出、接收方保存成功而本方恢复旧快照，就可能形成资产复制。尚未追完的条件会标为待验证，并列出补证任务；不会因为缺少最终复现就省略提醒，也不会把猜测写成已确认利用。轻量版保留相同的证据要求。
+
 ## 检查什么
 
 | 范围 | 重点问题 |
@@ -124,7 +152,7 @@ $blox-security-audit
 
 ### 会自动修复漏洞吗？
 
-审计会提供最小修复方向和回归建议，默认不改业务源码。你可以在审阅发现后，另行要求 agent 实施修复。
+完整版审计默认不改业务源码。需要自动修复时，使用 `bsa-lite` 并明确要求修复；它也可接收已有报告，复核当前版本后修改并验证。仅安装或调用 skill 不会自动发布、更改线上玩家存档或执行真实支付。
 
 ### 能保证找出所有漏洞吗？
 
@@ -170,6 +198,11 @@ skills/blox-security-audit/
 ├── examples/            # 可复现的合成示例
 └── LICENSE
 
+skills/bsa-lite/
+├── SKILL.md             # 独立的文本审计、修复与验证指引
+├── agents/              # 界面元数据
+└── LICENSE
+
 assets/readme/           # 本 README 的页面截图
 scripts/                 # 仓库检查
 tests/                   # 工具测试
@@ -177,6 +210,7 @@ tests/                   # 工具测试
 
 - [定位与覆盖](skills/blox-security-audit/references/discovery.md)
 - [推理与反证](skills/blox-security-audit/references/reasoning.md)
+- [潜在恶意利用与证据边界](skills/blox-security-audit/references/abuse-analysis.md)
 - [持久化与资产一致性](skills/blox-security-audit/references/persistence.md)
 - [验证边界](skills/blox-security-audit/references/validation.md)
 - [报告格式](skills/blox-security-audit/references/reporting.md)
@@ -185,4 +219,4 @@ tests/                   # 工具测试
 
 ## 许可
 
-[MIT](LICENSE)。独立复制或分发 skill 时，请保留目录内的[许可证](skills/blox-security-audit/LICENSE)。
+[MIT](LICENSE)。独立复制或分发任一 skill 时，请保留各自目录内的许可证。
