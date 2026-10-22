@@ -1,3 +1,5 @@
+<div align="center">
+
 # Blox Security Audit
 
 **让 AI agent 帮你检查 Roblox 源码，把漏洞、证据和修复方向讲清楚。**
@@ -11,9 +13,13 @@
 
 [![Validate](https://github.com/Xorice/bsa/actions/workflows/validate.yml/badge.svg)](https://github.com/Xorice/bsa/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Agent Skill](https://img.shields.io/badge/Agent-Skill-6e56cf)](skills/blox-security-audit/SKILL.md)
+[![Agent Skill](https://img.shields.io/badge/Skills-2-6e56cf)](skills/blox-security-audit/SKILL.md)
 
 [快速开始](#快速开始) · [效果预览](#效果预览) · [检查什么](#检查什么) · [常见问题](#常见问题) · [开发与贡献](#开发与贡献)
+
+<code>npx skills add Xorice/bsa</code>
+
+</div>
 
 ## 快速开始
 
